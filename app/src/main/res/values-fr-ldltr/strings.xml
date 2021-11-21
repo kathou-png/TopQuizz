@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Meilleur Quizz</string>
+    <string name="welcome_text">Bienvenue sur topQuizz. Quel est ton prénom ?</string>
+    <string name="welcomeback_text">Re-bonjour, </string>
+    <string name="welcomeback_text2">Ton dernier score est </string>
+    <string name="welcomeback_text3">, pourras-tu faire mieux ? </string>
+
+
+    <string name="name_text">Entre ton prénom</string>
+    <string name="play_text">Jouer</string>
+    <string name="user_name">Username</string>
+
+    <string name="question_0">Qui est le créateur d\'Android? </string>
+    <string name="answer_0_1">Andy Rubin</string>
+    <string name="answer_0_2">Steve Wozniak</string>
+    <string name="answer_0_3">Jake Wharton </string>
+    <string name="answer_0_4">Paul Smith </string>
+    <string name="index_answer_0">0</string>
+
+    <string name="question_1">En quelle année le premier homme est-il allé sur la lune? </string>
+    <string name="answer_1_1">1958</string>
+    <string name="answer_1_2">1962</string>
+    <string name="answer_1_3">1967</string>
+    <string name="answer_1_4">1969</string>
+    <string name="index_answer_1">3</string>
+
+    <string name="question_2">A quel numéro les Simpsons habitent-ils?</string>
+    <string name="answer_2_1">42</string>
+    <string name="answer_2_2">101</string>
+    <string name="answer_2_3">666</string>
+    <string name="answer_2_4">742</string>
+    <string name="index_answer_2">3</string>
+
+    <string name="question_3">Quelle est notre filiere?</string>
+    <string name="answer_3_1">FI</string>
+    <string name="answer_3_2">FE</string>
+    <string name="answer_3_3">FG</string>
+    <string name="answer_3_4">FB</string>
+    <string name="index_answer_3">1</string>
+
+    <string name="score">Ton score est</string>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:backgroundTint="#A7B8E6"
+    android:orientation="vertical"
+    android:padding="1dp">
+
+    <TextView
+        android:id="@+id/game_activity_textview_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:layout_weight="2"
+        android:background="#983D3D"
+        android:gravity="center"
+        android:text="@string/question_0"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/game_activity_button_1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="4"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#3341C3"
+        android:padding="16dp"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/game_activity_button_2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="4"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#3341C3"
+        android:padding="16dp"
+        android:textSize="12sp"/>
+
+    <Button
+        android:id="@+id/game_activity_button_3"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="4"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#3341C3"
+        android:padding="16dp"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/game_activity_button_4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="4"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="#3341C3"
+        android:padding="16dp"
+        android:textSize="12sp" />
+</LinearLayout>
