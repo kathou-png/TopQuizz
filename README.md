@@ -7,14 +7,12 @@
 - [ ] Mode nuit/jour, thème application
 
 ## Fonctionnalités
-- [ ] Rajout de joker (3 indices)
-- [ ] Plusieurs modes de jeux (facile, normal, difficile) avec timer
-- [ ] Partage du score sur les réseaux sociaux
+- [ ] Rajout de joker (3 indices) => Sami
+- [ ] Plusieurs modes de jeux (facile, normal, difficile) avec timer => ALEX
+- [ ] Partage du score sur les réseaux sociaux => Cathy
+- [ ] Rajout de questions par l'utilisateur
+- [ ] 3 vies 
 
 ## Autres
 - [ ] Alimentation de la base de données de questions
-- [ ] Rajout de langue (ES, IT)
-
-## NEW 
-- [ ] Profil utilisateur avec préférences joueurs 
-
+- [ ] Rajout de langues (ES, IT)
