@@ -77,7 +77,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 counter--;
             }
             public  void onFinish(){
-                mTimer.setText("FINISH!!");
                 endGame(GameState.lose);
 
             }
