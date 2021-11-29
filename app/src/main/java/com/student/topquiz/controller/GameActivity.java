@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import com.student.topquiz.R;
 import com.student.topquiz.model.Question;
 import com.student.topquiz.model.QuestionBank;
+import com.student.topquiz.model.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +30,9 @@ import java.util.List;
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private int mRemainingQuestionCount;
     private int mScore;
+    private static final int GAME_ACTIVITY_REQUEST_CODE = 04;
+
+    private static final String TAG = "GameActivity";
     public static final String BUNDLE_EXTRA_SCORE = "BUNDLE_EXTRA_SCORE";
     private static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
     private static final String SHARED_PREF_USER_INFO_SCORE = "SHARED_PREF_USER_INFO_SCORE";
@@ -34,6 +40,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String BUNDLE_STATE_SCORE = "BUNDLE_STATE_SCORE";
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
     private TextView mQuestionTextView;
+    private TextView mTimer;
+    public int counter;
     private Button mAnswer1Button;
     private Button mAnswer2Button;
     private Button mAnswer3Button;
@@ -56,6 +64,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mEnableTouchEvents = true;
         mQuestionBank = generateQuestionBank();
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
+        mTimer = findViewById(R.id.timer);
+        new CountDownTimer(30000, 1000){
+            public void onTick(long millisUntilFinished){
+                mTimer.setText(String.valueOf(counter));
+                counter++;
+            }
+            public  void onFinish(){
+                mTimer.setText("FINISH!!");
+            }
+        }.start();
 
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
@@ -207,11 +225,24 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent();
+                        Log.d(TAG,Integer.toString(mScore));
                         intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
                         setResult(RESULT_OK, intent);
                         finish();
                     }
                 })
+               /* .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                        Intent gameActivityIntent = new Intent(GameActivity.this, ShareActivity.class);
+                        startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE );
+
+                    }
+                })*/
                 .create()
                 .show();
     }

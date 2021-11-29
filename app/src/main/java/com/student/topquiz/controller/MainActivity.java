@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.os.Bundle;
 
+import com.google.gson.Gson;
 import com.student.topquiz.R;
 import com.student.topquiz.model.User;
 
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mPlayButton;
     private User mUser;
     private int score;
+    private  String mFirstname = "";
+    private  int mLastScore = 0;
     private static final int GAME_ACTIVITY_REQUEST_CODE = 03;
     private static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
     private static final String SHARED_PREF_USER_INFO_NAME = "SHARED_PREF_USER_INFO_NAME";
@@ -35,13 +38,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mUser = new User();
         mGreetingTextView = findViewById(R.id.main_textview_greeting);
         mNameEditText = findViewById(R.id.main_edittext_name);
         mPlayButton = findViewById(R.id.main_button_play);
         String previousFirstName = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
         int previousScore = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, 0);
     Log.d(TAG, "here in create scire us " + score);
+
+        mUser = new User(previousFirstName, previousScore);
         if(previousScore == 0 && previousFirstName == null){
             mPlayButton.setEnabled(false);
         }
@@ -89,18 +93,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (GAME_ACTIVITY_REQUEST_CODE == requestCode) {
             // Fetch the score from the Intent
-            Log.d(TAG,Integer.toString(score));
-            Log.d(TAG,Integer.toString(data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0)));
-            score = data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+
+            Gson gson = new Gson();
+           // mFirstname = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
+            mFirstname = mUser.getFirstName();
+            mLastScore =  data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+            String json = "{\"playerName\" : \"" + mFirstname + "\",\"playerScore\" : \"" + mLastScore +"\"}";
+            mUser = gson.fromJson(json, User.class);
 
             mGreetingTextView.setText( getString(R.string.welcomeback_text) + " "+mUser.getFirstName()+" !\n"
-                    + getString(R.string.welcomeback_text2) +" "+ score +" "+ getString(R.string.welcomeback_text3));
+                    + getString(R.string.welcomeback_text2) +" "+ mUser.getScore() +" "+ getString(R.string.welcomeback_text3));
             mPlayButton.setEnabled(true);
         }
 

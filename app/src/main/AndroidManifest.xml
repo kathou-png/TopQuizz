@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TopQuiz">
         <activity
+            android:name=".controller.ShareActivity"
+            android:exported="false" />
+        <activity
             android:name=".controller.GameActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false" />
@@ -23,5 +26,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>

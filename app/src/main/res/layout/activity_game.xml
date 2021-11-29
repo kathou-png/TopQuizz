@@ -65,4 +65,11 @@
         android:backgroundTint="#3341C3"
         android:padding="16dp"
         android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="TIMER" />
 </LinearLayout>
