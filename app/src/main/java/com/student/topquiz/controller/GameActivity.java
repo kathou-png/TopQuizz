@@ -27,6 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+enum GameState
+{
+    win, lose, pause
+}
+
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private int mRemainingQuestionCount;
     private int mScore;
@@ -41,7 +46,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
     private TextView mQuestionTextView;
     private TextView mTimer;
-    public int counter;
+    private int counter;
     private Button mAnswer1Button;
     private Button mAnswer2Button;
     private Button mAnswer3Button;
@@ -59,6 +64,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             mScore = 0;
             mRemainingQuestionCount = 3;
         }
+        counter = 60;
 
         setContentView(R.layout.activity_game);
         mEnableTouchEvents = true;
@@ -68,10 +74,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         new CountDownTimer(30000, 1000){
             public void onTick(long millisUntilFinished){
                 mTimer.setText(String.valueOf(counter));
-                counter++;
+                counter--;
             }
             public  void onFinish(){
                 mTimer.setText("FINISH!!");
+                endGame(GameState.lose);
+
             }
         }.start();
 
@@ -195,7 +203,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         displayQuestion(mCurrentQuestion);
                     }
                     else{
-                        endGame();
+                        endGame(GameState.win);
                     }
                 }
             }, 2_000); // LENGTH_SHORT is usually 2 second long
@@ -214,37 +222,44 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
-    private void endGame(){
+    private void endGame(GameState gameState){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         String previousFirstName = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
-
-        builder.setTitle("Well done, " + previousFirstName+ "!")
-                .setMessage(getString(R.string.score) + " "+mScore)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        Log.d(TAG,Integer.toString(mScore));
-                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-               /* .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                        Intent gameActivityIntent = new Intent(GameActivity.this, ShareActivity.class);
-                        startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE );
-
-                    }
-                })*/
-                .create()
-                .show();
+        if(gameState == GameState.win)
+        {
+            builder.setTitle("Well done, " + previousFirstName+ "!")
+                    .setMessage(getString(R.string.score) + " "+mScore)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent();
+                            Log.d(TAG,Integer.toString(mScore));
+                            intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+        else if(gameState == GameState.lose)
+        {
+            builder.setTitle("Game Over ! Better luck next time, " + previousFirstName+ "!")
+                    .setMessage(getString(R.string.score) + " "+mScore)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent();
+                            Log.d(TAG,Integer.toString(mScore));
+                            intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
     }
 
     @Override
