@@ -42,6 +42,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
     private static final String SHARED_PREF_USER_INFO_SCORE = "SHARED_PREF_USER_INFO_SCORE";
     private static final String SHARED_PREF_USER_INFO_NAME = "SHARED_PREF_USER_INFO_NAME";
+    private static final String SHARED_PREF_USER_INFO_DIFFICULTY = "SHARED_PREF_USER_INFO_DIFFICULTY";
     public static final String BUNDLE_STATE_SCORE = "BUNDLE_STATE_SCORE";
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
     private TextView mQuestionTextView;
@@ -52,6 +53,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button mAnswer3Button;
     private Button mAnswer4Button;
     private QuestionBank mQuestionBank;
+    private int nbQuestions;
     private Question mCurrentQuestion;
     private boolean mEnableTouchEvents;
     @Override
@@ -64,23 +66,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             mScore = 0;
             mRemainingQuestionCount = 3;
         }
-        counter = 60;
-
         setContentView(R.layout.activity_game);
         mEnableTouchEvents = true;
         mQuestionBank = generateQuestionBank();
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
-        mTimer = findViewById(R.id.timer);
-        new CountDownTimer(counter * 1000L, 1000){
-            public void onTick(long millisUntilFinished){
-                mTimer.setText(String.valueOf(counter));
-                counter--;
-            }
-            public  void onFinish(){
-                endGame(GameState.lose);
-
-            }
-        }.start();
 
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
@@ -97,12 +86,69 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer4Button.setOnClickListener(this);
     }
 
+    private void setTimer(Question question)
+    {
+        String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
+        switch (difficulty) {
+            case "Easy":
+                counter = 20;
+                break;
+            case "Normal":
+                counter = 10;
+                break;
+            case "Hard":
+                counter = 7;
+                break;
+        }
+        Log.d(TAG, Integer.toString(counter));
+
+
+        mTimer = findViewById(R.id.timer);
+        mTimer.setText(String.valueOf(counter));
+        new CountDownTimer(counter * 1000L, 1000){
+            public void onTick(long millisUntilFinished){
+                mTimer.setText(String.valueOf(counter));
+                counter--;
+            }
+            public  void onFinish(){
+                if(mCurrentQuestion == question){endGame(GameState.lose);}
+            }
+        }.start();
+    }
+
+    private int addPoints(boolean positiveScore)
+    {
+        int points = 0;
+        String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                .getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
+        if(positiveScore)
+        {
+            switch (difficulty) {
+                case "Easy":
+                    points = 1;
+                    break;
+                case "Normal":
+                    points = 2;
+                    break;
+                case "Hard":
+                    points = 3;
+                    break;
+            }
+        }
+        else
+        {
+            if(difficulty.equals("Hard")){points = -1;}
+        }
+        return points;
+    }
+
     private void displayQuestion(final Question question){
         mQuestionTextView.setText(question.getQuestion());
         mAnswer1Button.setText(question.getChoiceByIndex(0));
         mAnswer2Button.setText(question.getChoiceByIndex(1));
         mAnswer3Button.setText(question.getChoiceByIndex(2));
         mAnswer4Button.setText(question.getChoiceByIndex(3));
+        setTimer(question);
     }
 
     protected QuestionBank generateQuestionBank(){
@@ -164,8 +210,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 )
         );
 
+        nbQuestions = questionList.size();
         return new QuestionBank(questionList);
-
     }
 
     @Override
@@ -187,7 +233,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mEnableTouchEvents= false;
         if (index ==  mCurrentQuestion.getAnswerIndex()){
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
-            mScore++;
+            mScore += addPoints(true);
             getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
                     .edit()
                     .putInt(SHARED_PREF_USER_INFO_SCORE, mScore)
@@ -210,6 +256,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         else{
 
             Toast.makeText(this, "False!", Toast.LENGTH_SHORT).show();
+            mScore += addPoints(false);
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
