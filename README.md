@@ -4,7 +4,7 @@
 - [ ] Musique en boucle
 - [ ] Animation question (lors de click...)
 - [ ] Voix narratrice
-- [ ] Mode nuit/jour, thème application
+- [ ] Mode nuit/jour, thème application => Cathy
 
 ## Fonctionnalités
 - [ ] Rajout de joker (3 indices) => Sami
@@ -13,7 +13,7 @@
   -> Modification de la fonction endGame() pour prendre en compte le GameState (enum : win, lose, pause).
   -> Appel de la fonction endGame() à la fin du décompte en précisant un état de perte de partie.
 - [ ] Partage du score sur les réseaux sociaux => Cathy
-- [ ] Rajout de questions par l'utilisateur
+- [ ] Rajout de questions par l'utilisateur => Cathy
 - [ ] 3 vies 
 
 ## Autres
