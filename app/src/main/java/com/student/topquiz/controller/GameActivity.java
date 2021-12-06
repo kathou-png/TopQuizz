@@ -71,7 +71,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mQuestionBank = generateQuestionBank();
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
         mTimer = findViewById(R.id.timer);
-        new CountDownTimer(30000, 1000){
+        new CountDownTimer(counter * 1000L, 1000){
             public void onTick(long millisUntilFinished){
                 mTimer.setText(String.valueOf(counter));
                 counter--;
