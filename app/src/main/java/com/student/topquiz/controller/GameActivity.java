@@ -52,6 +52,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Button mAnswer2Button;
     private Button mAnswer3Button;
     private Button mAnswer4Button;
+    private Button mJokerButton;
     private QuestionBank mQuestionBank;
     private int nbQuestions;
     private Question mCurrentQuestion;
@@ -70,7 +71,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mEnableTouchEvents = true;
         mQuestionBank = generateQuestionBank();
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
-
+        mJokerButton = findViewById(R.id.mJokerButton);
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
         mAnswer3Button = findViewById(R.id.game_activity_button_3);
@@ -84,6 +85,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer2Button.setOnClickListener(this);
         mAnswer3Button.setOnClickListener(this);
         mAnswer4Button.setOnClickListener(this);
+        mJokerButton.setOnClickListener(this);
     }
 
     private void setTimer(Question question)
@@ -214,10 +216,17 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         return new QuestionBank(questionList);
     }
 
+    public void setVisibilityBack()
+    {
+        mAnswer1Button.setVisibility(View.VISIBLE);
+        mAnswer2Button.setVisibility(View.VISIBLE);
+        mAnswer3Button.setVisibility(View.VISIBLE);
+        mAnswer4Button.setVisibility(View.VISIBLE);
+    }
     @Override
     public void onClick(View v) {
         int index;
-
+        int correct_answer;
         if (v == mAnswer1Button) {
             index = 0;
         } else if (v == mAnswer2Button) {
@@ -226,12 +235,33 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             index = 2;
         } else if (v == mAnswer4Button) {
             index = 3;
-        } else {
+        } else if (v == mJokerButton) {
+            index=4;
+            correct_answer = mCurrentQuestion.getAnswerIndex();
+            switch (correct_answer)
+            {
+                case(0) :
+                    mAnswer2Button.setVisibility(View.GONE);
+                    mAnswer3Button.setVisibility(View.GONE);
+                    break;
+                case(1) :
+                    mAnswer1Button.setVisibility(View.GONE);
+                    mAnswer3Button.setVisibility(View.GONE);
+                    break;
+                case(2) :
+                case(3) :
+                    mAnswer1Button.setVisibility(View.GONE);
+                    mAnswer2Button.setVisibility(View.GONE);
+                    break;
+            }
+        }
+        else {
             throw new IllegalStateException("Unknown clicked view : " + v);
         }
-
-        mEnableTouchEvents= false;
+        if(index==4) mEnableTouchEvents = true;
+        else mEnableTouchEvents= false;
         if (index ==  mCurrentQuestion.getAnswerIndex()){
+
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
             mScore += addPoints(true);
             getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
@@ -243,9 +273,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void run() {
                     mEnableTouchEvents = true;
+
                     if (mRemainingQuestionCount >= 0) {
                         mCurrentQuestion = mQuestionBank.getNextQuestion();
                         displayQuestion(mCurrentQuestion);
+                        setVisibilityBack();
                     }
                     else{
                         endGame(GameState.win);
@@ -253,7 +285,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }, 2_000); // LENGTH_SHORT is usually 2 second long
         }
-        else{
+        else {
 
             Toast.makeText(this, "False!", Toast.LENGTH_SHORT).show();
             mScore += addPoints(false);

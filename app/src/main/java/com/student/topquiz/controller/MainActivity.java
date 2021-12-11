@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mEasyButton;
     private Button mNormalButton;
     private Button mHardButton;
+
     private User mUser;
     private int score;
     private  String mFirstname = "";
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mEasyButton = findViewById(R.id.main_button_easy);
         mNormalButton = findViewById(R.id.main_button_normal);
         mHardButton = findViewById(R.id.main_button_hard);
+
 
         String previousFirstName = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
         int previousScore = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, 0);
@@ -165,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 setDifficulty("Hard");
             }
         });
+
 
     }
 
