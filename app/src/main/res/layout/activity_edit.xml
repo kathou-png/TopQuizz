@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:backgroundTint="#A7B8E6"
+    android:orientation="vertical"
+    tools:context=".controller.EditActivity">
+
+    <TextView
+        android:id="@+id/EditTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/edit_title"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <EditText
+        android:id="@+id/questionEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/edit_title1"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <EditText
+        android:id="@+id/answer1Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <EditText
+        android:id="@+id/answer2Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <EditText
+        android:id="@+id/answer3Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <EditText
+        android:id="@+id/answer4Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/edit_title2"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/radio_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"/>
+</LinearLayout>

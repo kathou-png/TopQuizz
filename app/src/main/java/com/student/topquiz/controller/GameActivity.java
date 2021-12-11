@@ -18,11 +18,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.student.topquiz.R;
 import com.student.topquiz.model.Question;
 import com.student.topquiz.model.QuestionBank;
 import com.student.topquiz.model.User;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +49,7 @@ enum GameState
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     private int mRemainingQuestionCount;
     private int mScore;
+
     private static final int GAME_ACTIVITY_REQUEST_CODE = 04;
 
     private static final String TAG = "GameActivity";
@@ -47,6 +62,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
     private TextView mQuestionTextView;
     private TextView mTimer;
+    private TextView mScoreTextView;
     private int counter;
     private Button mAnswer1Button;
     private Button mAnswer2Button;
@@ -68,7 +84,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         setContentView(R.layout.activity_game);
         mEnableTouchEvents = true;
-        mQuestionBank = generateQuestionBank();
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
+        mScoreTextView = findViewById(R.id.score);
+        mScoreTextView.setText(String.valueOf(mScore));
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
 
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
@@ -105,7 +127,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         mTimer = findViewById(R.id.timer);
         mTimer.setText(String.valueOf(counter));
-        new CountDownTimer(counter * 1000L, 1000){
+        new CountDownTimer(counter * 1_000, 1_000){
             public void onTick(long millisUntilFinished){
                 mTimer.setText(String.valueOf(counter));
                 counter--;
@@ -151,8 +173,44 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setTimer(question);
     }
 
-    protected QuestionBank generateQuestionBank(){
-        List<Question> questionList = new ArrayList<Question>();
+    protected QuestionBank generateQuestionBank() throws FileNotFoundException, JSONException {
+        List<Question> questionList = new ArrayList<>();
+        //READ QUESTIONS
+        String ret = "";
+
+        try {
+            String file_name= this.getFilesDir() + "/mydir/"+"question.json";
+            InputStream inputStream = new FileInputStream(new File(file_name));
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        JSONObject obj = new JSONObject(ret).getJSONObject("1");
+
+        //extracting data array from json string
+        String question = obj.getString("question");
+        String answer1 = obj.getString("answer1");
+        String answer2 = obj.getString("answer2");
+        String answer3 = obj.getString("answer3");
+        String answer4 = obj.getString("answer4");
+        int index = obj.getInt("index");
+
         questionList.add(
                 new Question(
                         getString(R.string.question_0),
@@ -209,6 +267,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 )
         );
+        questionList.add(
+                new Question(
+                        question,
+                        Arrays.asList(
+                                answer1,
+                                answer2,
+                                answer3,
+                                answer4
+                        ),
+                        index
+
+                )
+        );
 
         nbQuestions = questionList.size();
         return new QuestionBank(questionList);
@@ -234,6 +305,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         if (index ==  mCurrentQuestion.getAnswerIndex()){
             Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
             mScore += addPoints(true);
+            mScoreTextView.setText(String.valueOf(mScore));
             getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
                     .edit()
                     .putInt(SHARED_PREF_USER_INFO_SCORE, mScore)
@@ -256,6 +328,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         else{
 
             Toast.makeText(this, "False!", Toast.LENGTH_SHORT).show();
+            mScoreTextView.setText(String.valueOf(mScore));
             mScore += addPoints(false);
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -272,6 +345,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         String previousFirstName = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
+
         if(gameState == GameState.win)
         {
             builder.setTitle("Well done, " + previousFirstName+ "!")
@@ -306,6 +380,39 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     .create()
                     .show();
         }
+
+
+        builder.setTitle("Well done, " + previousFirstName+ "!")
+                .setMessage(getString(R.string.score) + " "+mScore)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent();
+                        Log.d(TAG,Integer.toString(mScore));
+                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+                .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent sendIntent = new Intent();
+                        sendIntent.setAction(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, "My best score is "+ mScore+" on TopQuizz ! Try to beat me");
+                        sendIntent.setType("text/plain");
+
+                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        startActivity(shareIntent);
+
+                        Intent intent = new Intent();
+                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                })
+                .create()
+                .show();
     }
 
     @Override

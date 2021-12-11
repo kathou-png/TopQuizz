@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mEasyButton;
     private Button mNormalButton;
     private Button mHardButton;
+    private Button mEditButton;
     private User mUser;
     private int score;
     private  String mFirstname = "";
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mEasyButton = findViewById(R.id.main_button_easy);
         mNormalButton = findViewById(R.id.main_button_normal);
         mHardButton = findViewById(R.id.main_button_hard);
-
+        mEditButton = findViewById(R.id.edit_button);
         String previousFirstName = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
         int previousScore = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, 0);
         String difficulty = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal");
@@ -165,6 +166,13 @@ public class MainActivity extends AppCompatActivity {
                 setDifficulty("Hard");
             }
         });
+        mEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent gameActivityIntent = new Intent(MainActivity.this, EditActivity.class);
+                startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE );
+            }
+        });
 
     }
 
@@ -186,6 +194,5 @@ public class MainActivity extends AppCompatActivity {
                     + getString(R.string.welcomeback_text2) +" "+ mUser.getScore() +" "+ getString(R.string.welcomeback_text3));
             mPlayButton.setEnabled(true);
         }
-
     }
 }

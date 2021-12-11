@@ -93,6 +93,23 @@
             android:textStyle="bold"
             android:text="[time]"
             android:gravity="left" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="right"
+            android:text="SCORE : " />
+        <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="[time]"
+        android:gravity="left" />
 
     </LinearLayout>
 </LinearLayout>
