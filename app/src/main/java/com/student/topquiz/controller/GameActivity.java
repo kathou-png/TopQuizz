@@ -3,10 +3,11 @@ package com.student.topquiz.controller;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -14,18 +15,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
 import com.student.topquiz.R;
 import com.student.topquiz.model.Question;
 import com.student.topquiz.model.QuestionBank;
-import com.student.topquiz.model.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,7 +30,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -58,11 +54,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static final String SHARED_PREF_USER_INFO_SCORE = "SHARED_PREF_USER_INFO_SCORE";
     private static final String SHARED_PREF_USER_INFO_NAME = "SHARED_PREF_USER_INFO_NAME";
     private static final String SHARED_PREF_USER_INFO_DIFFICULTY = "SHARED_PREF_USER_INFO_DIFFICULTY";
+    private static final String SHARED_PREF_USER_THEME = "SHARED_PREF_THEME";
     public static final String BUNDLE_STATE_SCORE = "BUNDLE_STATE_SCORE";
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
     private TextView mQuestionTextView;
     private TextView mTimer;
     private TextView mScoreTextView;
+    private ImageView mInfoIcon;
+    private ImageView mSettingsIcon;
     private int counter;
     private Button mAnswer1Button;
     private Button mAnswer2Button;
@@ -72,8 +71,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private int nbQuestions;
     private Question mCurrentQuestion;
     private boolean mEnableTouchEvents;
+    private int defaultTheme;
+
+    MediaPlayer ring;
+    MediaPlayer buttonClick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        ring = MediaPlayer.create(GameActivity.this, R.raw.fluffing);
+        buttonClick= MediaPlayer.create(GameActivity.this,R.raw.buttonclick);
+        buttonClick.setLooping(false);
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
@@ -92,12 +99,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mScoreTextView = findViewById(R.id.score);
         mScoreTextView.setText(String.valueOf(mScore));
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
-
+        mInfoIcon = findViewById(R.id.infoicon);
+        mSettingsIcon = findViewById(R.id.settingsicon);
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
         mAnswer3Button = findViewById(R.id.game_activity_button_3);
         mAnswer4Button = findViewById(R.id.game_activity_button_4);
         mCurrentQuestion = mQuestionBank.getNextQuestion();
+        defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 0);
+
         displayQuestion(mCurrentQuestion);
 
         // Use the same listener for the four buttons.
@@ -106,6 +116,46 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer2Button.setOnClickListener(this);
         mAnswer3Button.setOnClickListener(this);
         mAnswer4Button.setOnClickListener(this);
+
+        mInfoIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonClick.start();
+                showInfoView();
+            }
+        });
+        mSettingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonClick.start();
+                showSettingsView();
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!ring.isPlaying()) {
+            ring.setLooping(true);
+            ring.start();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (!ring.isPlaying()) {
+            ring = MediaPlayer.create(GameActivity.this, R.raw.fluffing);
+            ring.setLooping(true);
+            ring.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ring.pause();
     }
 
     private void setTimer(Question question)
@@ -172,7 +222,51 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer4Button.setText(question.getChoiceByIndex(3));
         setTimer(question);
     }
-
+    private void showInfoView(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Information about this application")
+                .setMessage("This app was created by Alex VO, Sami OURABAH and Cathy TRUONG")
+                .setNegativeButton("GOT IT!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // builder.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+    private void showSettingsView(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String[] items = {"Light Mode","Dark Mode"};
+        builder.setCancelable(false);
+        builder.setTitle("Choose Theme")
+                .setSingleChoiceItems(items, defaultTheme , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                                defaultTheme = 0;
+                                getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                                        .edit()
+                                        .putInt(SHARED_PREF_USER_THEME, 0)
+                                        .apply();
+                                break;
+                            case 1:
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                                defaultTheme = 1;
+                                getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                                        .edit()
+                                        .putInt(SHARED_PREF_USER_THEME, 1)
+                                        .apply();
+                                break;
+                        }
+                    }
+                })
+                .create()
+                .show();
+    }
     protected QuestionBank generateQuestionBank() throws FileNotFoundException, JSONException {
         List<Question> questionList = new ArrayList<>();
         //READ QUESTIONS
@@ -288,7 +382,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         int index;
-
+        buttonClick= MediaPlayer.create(GameActivity.this,R.raw.buttonclick);
+        buttonClick.start();
         if (v == mAnswer1Button) {
             index = 0;
         } else if (v == mAnswer2Button) {
@@ -333,7 +428,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
                     mEnableTouchEvents = true;
                 }
             }, 2_000); // LENGTH_SHORT is usually 2 second long
