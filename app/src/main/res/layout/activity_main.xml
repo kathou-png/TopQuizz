@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:backgroundTint="#A7B8E6"
     android:orientation="vertical"
     tools:context=".controller.MainActivity">
 
@@ -16,7 +15,6 @@
         android:gravity="center"
         android:padding="8dp"
         android:text="@string/welcome_text"
-        android:textColor="#3D478A"
         android:textSize="20dp"
         android:textStyle="bold" />
 
@@ -24,9 +22,7 @@
         android:id="@+id/main_edittext_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/name_text"
-        android:textColor="#F1EAEA"
-        android:textColorHint="#FFFCFC" />
+        android:hint="@string/name_text" />
 
     <TextView
         android:id="@+id/main_textview_difficulty"
@@ -36,15 +32,12 @@
         android:gravity="center"
         android:padding="8dp"
         android:text="Choose the difficulty :"
-        android:textColor="#3D478A"
         android:textSize="20dp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:backgroundTint="#A7B8E6"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="1dp">
@@ -54,7 +47,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="#808080 "
+            android:textColor="@color/light_grey"
+            android:backgroundTint="@color/easy"
             android:text="Easy" />
 
         <Button
@@ -62,7 +56,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="#808080 "
+            android:textColor="@color/light_grey"
+            android:backgroundTint="@color/intermediate"
             android:text="Normal" />
 
         <Button
@@ -70,7 +65,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="#808080 "
+            android:textColor="@color/light_grey"
+            android:backgroundTint="@color/hard"
             android:text="Hard" />
 
     </LinearLayout>
@@ -82,6 +78,46 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="64dp"
         android:backgroundTint="#3341C3"
+        android:textColor="@color/light_grey"
         android:text="@string/play_text" />
+
+    <Button
+        android:id="@+id/edit_button"   android:layout_gravity="center_horizontal"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="#3341C3"
+        android:textColor="@color/light_grey"
+        android:text="@string/edit_questions" />
+    <Space
+        android:layout_width="60dp"
+        android:layout_height="60dp"></Space>
+    <LinearLayout
+        android:id="@+id/footer" android:layout_width="fill_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <ImageView
+            android:id="@+id/infoicon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:src="@drawable/ic_baseline_info_24">
+
+        </ImageView>
+        <Space
+            android:layout_width="360dp"
+            android:layout_height="6dp"/>
+        <ImageView
+            android:id="@+id/settingsicon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:src="@drawable/ic_baseline_settings_24"
+           >
+
+        </ImageView>
+    </LinearLayout>
 
 </LinearLayout>

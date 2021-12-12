@@ -4,6 +4,11 @@
     <string name="welcomeback_text">Welcome back, </string>
     <string name="welcomeback_text2">Your last score was </string>
     <string name="welcomeback_text3">, will you do better this time ? </string>
+    <string name="edit_questions">Add questions</string>
+    <string name="edit_title">Add your question</string>
+    <string name="edit_title1">Put your answers</string>
+    <string name="edit_title2">Select the correct one</string>
+    <string name="submit">Submit</string>*
 
     <string name="name_text">Please type your name</string>
     <string name="play_text">Play</string>

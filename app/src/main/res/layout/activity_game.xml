@@ -4,23 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:backgroundTint="#A7B8E6"
     android:orientation="vertical"
     android:padding="1dp">
-
+    <LinearLayout
+        android:layout_width="411dp"
+        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/game_activity_textview_question"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
         android:layout_weight="2"
-        android:background="#983D3D"
         android:gravity="center"
         android:text="@string/question_0"
-        android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/playicon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_baseline_play_arrow_24"></ImageView>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/game_activity_button_1"
@@ -69,8 +75,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:backgroundTint="#A7B8E6"
         android:orientation="horizontal"
         android:padding="1dp">
 
@@ -79,21 +83,96 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="20sp"
-            android:textStyle="bold"
             android:gravity="right"
-            android:text="TIMER : " />
+            android:text="TIMER : "
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:gravity="left"
             android:text="[time]"
-            android:gravity="left" />
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:padding="1dp">
 
+            <ImageView
+                android:id="@+id/heart1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="left"
+                android:src="@drawable/heart">
+            </ImageView>
+            <ImageView
+                android:id="@+id/heart2"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="left"
+                android:src="@drawable/heart">
+            </ImageView>
+            <ImageView
+                android:id="@+id/heart3"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="left"
+                android:src="@drawable/heart">
+            </ImageView>
+        </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="right"
+                    android:text="SCORE : " />
+
+
+                <TextView
+                    android:id="@+id/score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="[score]"
+                    android:gravity="left" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="411dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/infoicon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_baseline_info_24">
+
+        </ImageView>
+        <Space
+            android:layout_width="360dp"
+            android:layout_height="6dp"/>
+        <ImageView
+            android:id="@+id/settingsicon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_settings_24">
+
+<<<<<<< HEAD
         <Button
             android:id="@+id/mJokerButton"
             android:layout_width="wrap_content"
@@ -101,5 +180,8 @@
             android:layout_weight="1"
             android:text="Joker" />
 
+=======
+        </ImageView>
+>>>>>>> main
     </LinearLayout>
 </LinearLayout>

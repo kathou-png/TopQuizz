@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".controller.EditActivity">
+    <LinearLayout
+        android:layout_width="411dp"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/backicon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_baseline_arrow_back_24"></ImageView>
+        <TextView
+            android:id="@+id/EditTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/edit_title"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+    <EditText
+        android:id="@+id/questionEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/edit_title1"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <EditText
+        android:id="@+id/answer1Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <EditText
+        android:id="@+id/answer2Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <EditText
+        android:id="@+id/answer3Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <EditText
+        android:id="@+id/answer4Edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#F1EAEA"
+        android:textColorHint="#FFFCFC" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:text="@string/edit_title2"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/radio_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/purple_700"
+        android:text="@string/submit"/>
+    <Space
+        android:layout_width="60dp"
+        android:layout_height="20dp"></Space>
+    <LinearLayout
+        android:layout_width="411dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/infoicon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_baseline_info_24">
+
+        </ImageView>
+        <Space
+            android:layout_width="360dp"
+            android:layout_height="6dp"/>
+        <ImageView
+            android:id="@+id/settingsicon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_settings_24">
+
+        </ImageView>
+    </LinearLayout>
+</LinearLayout>
