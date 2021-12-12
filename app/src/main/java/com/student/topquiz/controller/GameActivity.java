@@ -88,6 +88,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mHeart1;
     private ImageView mHeart2;
     private ImageView mHeart3;
+    private int mSavedTime;
+    private Question mTimerQuestion;
     private static CallbackManager callbackManager;
     private static ShareDialog shareDialog;
 
@@ -210,6 +212,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 mPlayIcon.setImageResource(R.drawable.ic_baseline_pause_24);
                 //onPause();
+                mGameState = GameState.pause;
                 showPauseView();
             }
         });
@@ -302,23 +305,29 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setHearts();
     }
 
-    private void setTimer(Question question)
+    private void setTimer(Question question, int overrideTimer, boolean override)
     {
         // Add a delay to the timer to counter the bug which allowed the timer to go on for
         // 2 seconds after the user answered correctly.
         int delay = 2;
-        String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
-        switch (difficulty) {
-            case "Easy":
-                counter = 20;
-                break;
-            case "Normal":
-                counter = 10;
-                break;
-            case "Hard":
-                counter = 7;
-                break;
+        if(!override)
+        {
+
+            String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
+            switch (difficulty) {
+                case "Easy":
+                    counter = 20;
+                    break;
+                case "Normal":
+                    counter = 10;
+                    break;
+                case "Hard":
+                    counter = 7;
+                    break;
+            }
         }
+        else{counter = overrideTimer;}
+
         mTimer = findViewById(R.id.timer);
         // Don't display the added delay to the user.
         mTimer.setText(String.valueOf(counter));
@@ -329,7 +338,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 if(mCurrentQuestion != question || mGameState == GameState.lose){cancel();}
                 // Only display positive values.
                 if(counter >= 0){mTimer.setText(String.valueOf(counter));}
-                counter--;
+                // If user has paused the game, don't decrement.
+                if(mGameState == GameState.pause)
+                {
+                    mSavedTime = (int) (millisUntilFinished / 1_000L - delay);
+                    mTimerQuestion = question;
+                    cancel();
+                }
+                else{counter--;}
+
             }
             public  void onFinish()
             {
@@ -339,7 +356,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     mLives--;
                     verifyLives();
                     // Reset timer by creating a new timer if it isn't gameover.
-                    setTimer(question);
+                    setTimer(question, 0, false);
                     // Cancel the current timer.
                     cancel();
                 }
@@ -380,7 +397,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer2Button.setText(question.getChoiceByIndex(1));
         mAnswer3Button.setText(question.getChoiceByIndex(2));
         mAnswer4Button.setText(question.getChoiceByIndex(3));
-        setTimer(question);
+        setTimer(question, 0, false);
     }
 
     private void showPauseView(){
@@ -392,6 +409,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        mGameState = GameState.play;
+                        setTimer(mTimerQuestion, mSavedTime, true);
+
                     }
                 })
                 .setNeutralButton("Home", new DialogInterface.OnClickListener() {
