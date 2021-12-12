@@ -107,7 +107,8 @@
 
         </ImageView>
         <Space
-            android:layout_width="360dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="6dp"/>
         <ImageView
             android:id="@+id/settingsicon"

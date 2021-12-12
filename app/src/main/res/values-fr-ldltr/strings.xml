@@ -42,12 +42,12 @@
     <string name="answer_2_4">742</string>
     <string name="index_answer_2">3</string>
 
-    <string name="question_3">Quelle est notre filiere?</string>
+    <!--string name="question_3">Quelle est notre filiere?</string>
     <string name="answer_3_1">FI</string>
     <string name="answer_3_2">FE</string>
     <string name="answer_3_3">FG</string>
     <string name="answer_3_4">FB</string>
-    <string name="index_answer_3">1</string>
+    <string name="index_answer_3">0</string-->
 
     <string name="question_4">En quelle année Google a t-il été lancé sur le web?</string>
 

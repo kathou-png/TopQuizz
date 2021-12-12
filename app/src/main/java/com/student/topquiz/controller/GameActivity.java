@@ -545,7 +545,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         )
 
                 )
-        );
+        );/*
         questionList.add(
                 new Question(
                         getString(R.string.question_3),
@@ -559,7 +559,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         )
 
                 )
-        );
+        );*/
         questionList.add(
                 new Question(
                         getString(R.string.question_4),
