@@ -160,6 +160,9 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setTimer(Question question)
     {
+        // Add a delay to the timer to counter the bug which allowed the timer to go on for
+        // 3 seconds after the user answered correctly.
+        int delay = 3;
         String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
         switch (difficulty) {
             case "Easy":
@@ -172,16 +175,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 counter = 7;
                 break;
         }
-        Log.d(TAG, Integer.toString(counter));
-
-
         mTimer = findViewById(R.id.timer);
+        // Don't display the added delay to the user.
         mTimer.setText(String.valueOf(counter));
-        new CountDownTimer(counter * 1_000, 1_000){
+        new CountDownTimer((counter + delay) * 1_000L, 1_000){
             public void onTick(long millisUntilFinished)
             {
+                // If user has moved on to the next question, cancel the timer.
                 if(mCurrentQuestion != question){cancel();}
-                mTimer.setText(String.valueOf(counter));
+                // Only display positive values.
+                if(counter >= 0){mTimer.setText(String.valueOf(counter));}
                 counter--;
             }
             public  void onFinish()
