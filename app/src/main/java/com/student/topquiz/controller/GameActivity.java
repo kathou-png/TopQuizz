@@ -235,8 +235,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             {
                 if(mCurrentQuestion == question)
                 {
+                    // Decrement lives and verify if the end should end.
                     mLives--;
                     verifyLives();
+                    // Reset timer by creating a new timer if it isn't gameover.
+                    setTimer(question);
+                    // Cancel the current timer.
+                    cancel();
                 }
                 cancel();
             }
