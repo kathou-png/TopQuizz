@@ -560,6 +560,81 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 )
         );
+        questionList.add(
+                new Question(
+                        getString(R.string.question_4),
+                        Arrays.asList(
+                                getString(R.string.answer_4_1),
+                                getString(R.string.answer_4_2),
+                                getString(R.string.answer_4_3),
+                                getString(R.string.answer_4_4)
+                        ),
+                        Integer.parseInt(getString(R.string.index_answer_4)
+                        )
+
+                )
+        );
+
+        questionList.add(
+                new Question(
+                        getString(R.string.question_5),
+                        Arrays.asList(
+                                getString(R.string.answer_5_1),
+                                getString(R.string.answer_5_2),
+                                getString(R.string.answer_5_3),
+                                getString(R.string.answer_5_4)
+                        ),
+                        Integer.parseInt(getString(R.string.index_answer_5)
+                        )
+
+                )
+        );
+
+        questionList.add(
+                new Question(
+                        getString(R.string.question_6),
+                        Arrays.asList(
+                                getString(R.string.answer_6_1),
+                                getString(R.string.answer_6_2),
+                                getString(R.string.answer_6_3),
+                                getString(R.string.answer_6_4)
+                        ),
+                        Integer.parseInt(getString(R.string.index_answer_6)
+                        )
+
+                )
+        );
+
+        questionList.add(
+                new Question(
+                        getString(R.string.question_7),
+                        Arrays.asList(
+                                getString(R.string.answer_7_1),
+                                getString(R.string.answer_7_2),
+                                getString(R.string.answer_7_3),
+                                getString(R.string.answer_7_4)
+                        ),
+                        Integer.parseInt(getString(R.string.index_answer_7)
+                        )
+
+                )
+        );
+
+        questionList.add(
+                new Question(
+                        getString(R.string.question_8),
+                        Arrays.asList(
+                                getString(R.string.answer_8_1),
+                                getString(R.string.answer_8_2),
+                                getString(R.string.answer_8_3),
+                                getString(R.string.answer_8_4)
+                        ),
+                        Integer.parseInt(getString(R.string.index_answer_8)
+                        )
+
+                )
+        );
+
 
         nbQuestions = questionList.size();
         return new QuestionBank(questionList);
@@ -650,14 +725,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent sendIntent = new Intent();
+                            openShareDialog();
+                           /* Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
                             sendIntent.putExtra(Intent.EXTRA_TEXT, "My best score is "+ mScore+" on TopQuizz ! Try to beat me");
                             sendIntent.setType("text/plain");
 
                             Intent shareIntent = Intent.createChooser(sendIntent, null);
                             startActivity(shareIntent);
-
+                            */
                             Intent intent = new Intent();
                             intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
                             setResult(RESULT_OK, intent);
@@ -706,31 +782,32 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void openShareDialog(){
-    callbackManager = CallbackManager.Factory.create();
-    shareDialog = new ShareDialog(this);
-    shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-        @Override
-        public void onSuccess(Sharer.Result result) {
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
 
+            }
+
+            @Override
+            public void onError(@NonNull FacebookException e) {
+
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setQuote("My best score on top quizz is " + mScore + ", try to beat me")
+                    .setContentUrl(Uri.parse("https://openclassrooms.com/fr/courses/4517166-developpez-votre-premiere-application-android"))
+                    .build();
+            shareDialog.show(linkContent);
         }
 
-        @Override
-        public void onError(@NonNull FacebookException e) {
-
-        }
-
-        @Override
-        public void onCancel() {
-
-        }
-    });
-    if (ShareDialog.canShow(ShareLinkContent.class)) {
-        ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                .setQuote("My best score on top quizz is " + mScore + ", try to beat me")
-                .setContentUrl(Uri.parse("https://openclassrooms.com/fr/courses/4517166-developpez-votre-premiere-application-android"))
-                .build();
-        shareDialog.show(linkContent);
-    }
 
 }
 

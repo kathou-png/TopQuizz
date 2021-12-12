@@ -49,5 +49,45 @@
     <string name="answer_3_4">FB</string>
     <string name="index_answer_3">1</string>
 
+    <string name="question_4">En quelle année Google a t-il été lancé sur le web?</string>
+
+    <string name="answer_4_1">1998</string>
+    <string name="answer_4_2">1989</string>
+    <string name="answer_4_3">1995</string>
+    <string name="answer_4_4">1991</string>
+    <string name="index_answer_4">0</string>
+
+    <string name="question_5">Quel fruit désigne également un animal ?</string>
+
+    <string name="answer_5_1">Banane</string>
+    <string name="answer_5_2">Kiwi</string>
+    <string name="answer_5_3">Orange</string>
+    <string name="answer_5_4">Pomme</string>
+    <string name="index_answer_5">1</string>
+
+    <string name="question_6">Qui est le plus grand prédateur au monde ?</string>
+
+    <string name="answer_6_1">Lion</string>
+    <string name="answer_6_2">Tigre</string>
+    <string name="answer_6_3">Crocodile</string>
+    <string name="answer_6_4">Ours polaire</string>
+    <string name="index_answer_6">3</string>
+
+    <string name="question_7">Quel animal ne peut pas sauter ?</string>
+
+    <string name="answer_7_1">Crocodile</string>
+    <string name="answer_7_2">Paresseux</string>
+    <string name="answer_7_3">Elephant</string>
+    <string name="answer_7_4">Serpent</string>
+    <string name="index_answer_7">2</string>
+
+    <string name="question_8">Combien de langues sont parlées en Suisse?</string>
+
+    <string name="answer_8_1">4</string>
+    <string name="answer_8_2">2</string>
+    <string name="answer_8_3">1</string>
+    <string name="answer_8_4">6</string>
+    <string name="index_answer_8">0</string>
+
     <string name="score">Ton score est</string>
 </resources>
