@@ -72,6 +72,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mInfoIcon;
     private ImageView mSettingsIcon;
     private ImageView mPlayIcon;
+    private ImageView mHintIcon;
     private int counter;
     private Button mAnswer1Button;
     private Button mAnswer2Button;
@@ -121,6 +122,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mInfoIcon = findViewById(R.id.infoicon);
         mSettingsIcon = findViewById(R.id.settingsicon);
         mPlayIcon = findViewById(R.id.playicon);
+        mHintIcon = findViewById(R.id.hinticon);
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
         mAnswer3Button = findViewById(R.id.game_activity_button_3);
@@ -160,6 +162,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 mPlayIcon.setImageResource(R.drawable.ic_baseline_pause_24);
                 //onPause();
                 showPauseView();
+            }
+        });
+        mHintIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -390,7 +398,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         List<Question> questionList = new ArrayList<>();
         //READ QUESTIONS
         String ret = "";
-
+        JSONObject obj;
         try {
             String file_name= this.getFilesDir() + "/mydir/"+"question.json";
             InputStream inputStream = new FileInputStream(new File(file_name));
@@ -407,6 +415,28 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
                 inputStream.close();
                 ret = stringBuilder.toString();
+                obj = new JSONObject(ret).getJSONObject("1");
+
+                //extracting data array from json string
+                String question = obj.getString("question");
+                String answer1 = obj.getString("answer1");
+                String answer2 = obj.getString("answer2");
+                String answer3 = obj.getString("answer3");
+                String answer4 = obj.getString("answer4");
+                int index = obj.getInt("index");
+                questionList.add(
+                        new Question(
+                                question,
+                                Arrays.asList(
+                                        answer1,
+                                        answer2,
+                                        answer3,
+                                        answer4
+                                ),
+                                index
+
+                        )
+                );
             }
         }
         catch (FileNotFoundException e) {
@@ -414,16 +444,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
         }
-        JSONObject obj = new JSONObject(ret).getJSONObject("1");
-
-        //extracting data array from json string
-        String question = obj.getString("question");
-        String answer1 = obj.getString("answer1");
-        String answer2 = obj.getString("answer2");
-        String answer3 = obj.getString("answer3");
-        String answer4 = obj.getString("answer4");
-        int index = obj.getInt("index");
-
         questionList.add(
                 new Question(
                         getString(R.string.question_0),
@@ -477,19 +497,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         ),
                         Integer.parseInt(getString(R.string.index_answer_3)
                         )
-
-                )
-        );
-        questionList.add(
-                new Question(
-                        question,
-                        Arrays.asList(
-                                answer1,
-                                answer2,
-                                answer3,
-                                answer4
-                        ),
-                        index
 
                 )
         );
