@@ -411,6 +411,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         dialog.dismiss();
                         mGameState = GameState.play;
                         setTimer(mTimerQuestion, mSavedTime, true);
+                        mPlayIcon.setImageResource(R.drawable.ic_baseline_play_arrow_24);
 
                     }
                 })
