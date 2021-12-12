@@ -16,7 +16,10 @@
   -> La difficulté impacte maintenant les points (+/- en fonction de la difficulté et points negatifs en mode hard) \
 - [x] Partage du score sur les réseaux sociaux => Cathy
 - [x] Rajout de questions par l'utilisateur => Cathy
-- [ ] 3 vies 
+- [x] 3 vies => Alex \
+  -> 3 vies représentés par 3 coeur rouges \
+  -> À la perte d'une vie, appel d'une fonction qui va changer la couleur d'un coeur (Rouge > Gris) \
+  -> Si la perte d'une vie est causée par un timer à 0, relance le timer après avoir enlevé une vie.
 
 ## Autres
 - [ ] Alimentation de la base de données de questions
