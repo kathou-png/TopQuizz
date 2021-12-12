@@ -196,6 +196,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     mGameState = GameState.lose;
                     endGame();
                 }
+                cancel();
             }
         }.start();
     }
