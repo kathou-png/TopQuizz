@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -73,6 +74,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mEnableTouchEvents;
     private int defaultTheme;
     private GameState mGameState;
+    private int mLives;
+    private ImageView mHeart1;
+    private ImageView mHeart2;
+    private ImageView mHeart3;
 
     MediaPlayer ring;
     MediaPlayer buttonClick;
@@ -98,6 +103,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         mGameState = GameState.play;
+        mLives = 3;
+        mHeart1 = findViewById(R.id.heart1);
+        mHeart2 = findViewById(R.id.heart2);
+        mHeart3 = findViewById(R.id.heart3);
+        setHearts();
         mScoreTextView = findViewById(R.id.score);
         mScoreTextView.setText(String.valueOf(mScore));
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
@@ -160,6 +170,38 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         ring.pause();
     }
 
+    private void setHearts()
+    {
+        switch(mLives)
+        {
+            case 0:
+                mHeart1.setImageResource(R.drawable.grey_heart);
+            case 1:
+                mHeart2.setImageResource(R.drawable.grey_heart);
+                break;
+            case 2:
+                mHeart3.setImageResource(R.drawable.grey_heart);
+                break;
+            case 3:
+                mHeart1.setColorFilter(0xff0000);
+                mHeart2.setColorFilter(0xff0000);
+                mHeart3.setColorFilter(0xff0000);
+                break;
+        }
+    }
+
+    private void verifyLives()
+    {
+        Log.d(TAG,"lives");
+        Log.d(TAG,Integer.toString(mLives));
+        if(mLives <= 0)
+        {
+            mGameState = GameState.lose;
+            endGame();
+        }
+        setHearts();
+    }
+
     private void setTimer(Question question)
     {
         // Add a delay to the timer to counter the bug which allowed the timer to go on for
@@ -193,8 +235,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             {
                 if(mCurrentQuestion == question)
                 {
-                    mGameState = GameState.lose;
-                    endGame();
+                    mLives--;
+                    verifyLives();
                 }
                 cancel();
             }
@@ -439,12 +481,15 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "False!", Toast.LENGTH_SHORT).show();
             mScoreTextView.setText(String.valueOf(mScore));
             mScore += addPoints(false);
+            mLives--;
+            verifyLives();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mEnableTouchEvents = true;
                 }
             }, 2_000); // LENGTH_SHORT is usually 2 second long
+
         }
 
 
