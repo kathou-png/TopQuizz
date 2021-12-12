@@ -207,6 +207,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case "Hard":
                         mHintIcon.setVisibility(View.GONE);
+                        Toast.makeText(GameActivity.this, "Joker indisponible en mode Hard!", Toast.LENGTH_SHORT).show();
                         break;
                 }
 
