@@ -167,7 +167,23 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mHintIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                int correct_answer = mCurrentQuestion.getAnswerIndex();
+                switch (correct_answer)
+                {
+                    case(0) :
+                        mAnswer2Button.setVisibility(View.GONE);
+                        mAnswer3Button.setVisibility(View.GONE);
+                        break;
+                    case(1) :
+                        mAnswer1Button.setVisibility(View.GONE);
+                        mAnswer3Button.setVisibility(View.GONE);
+                        break;
+                    case(2) :
+                    case(3) :
+                        mAnswer1Button.setVisibility(View.GONE);
+                        mAnswer2Button.setVisibility(View.GONE);
+                        break;
+                }
             }
         });
     }
@@ -229,6 +245,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 mHeart3.setColorFilter(0xff0000);
                 break;
         }
+    }
+    public void setVisibilityBack()
+    {
+        mAnswer1Button.setVisibility(View.VISIBLE);
+        mAnswer2Button.setVisibility(View.VISIBLE);
+        mAnswer3Button.setVisibility(View.VISIBLE);
+        mAnswer4Button.setVisibility(View.VISIBLE);
     }
 
     private void verifyLives()
@@ -539,6 +562,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     if (mRemainingQuestionCount >= 0) {
                         mCurrentQuestion = mQuestionBank.getNextQuestion();
                         displayQuestion(mCurrentQuestion);
+                        setVisibilityBack();
                     }
                     else{
                         mGameState = GameState.win;
@@ -558,6 +582,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void run() {
                     mEnableTouchEvents = true;
+                    setVisibilityBack();
                 }
             }, 2_000); // LENGTH_SHORT is usually 2 second long
 
