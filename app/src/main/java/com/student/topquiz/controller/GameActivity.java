@@ -168,22 +168,48 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 int correct_answer = mCurrentQuestion.getAnswerIndex();
-                switch (correct_answer)
+                String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                        .getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
+                switch(difficulty)
                 {
-                    case(0) :
-                        mAnswer2Button.setVisibility(View.GONE);
-                        mAnswer3Button.setVisibility(View.GONE);
+                    case "Easy":
+                        switch (correct_answer)
+                        {
+                            case 0 :
+                                mAnswer2Button.setVisibility(View.GONE);
+                                mAnswer3Button.setVisibility(View.GONE);
+                                break;
+                            case 1 :
+                                mAnswer1Button.setVisibility(View.GONE);
+                                mAnswer3Button.setVisibility(View.GONE);
+                                break;
+                            case 2 :
+                            case 3 :
+                                mAnswer1Button.setVisibility(View.GONE);
+                                mAnswer2Button.setVisibility(View.GONE);
+                                break;
+                        }
                         break;
-                    case(1) :
-                        mAnswer1Button.setVisibility(View.GONE);
-                        mAnswer3Button.setVisibility(View.GONE);
+                    case "Normal":
+                        switch (correct_answer)
+                        {
+                            case 0 :
+                                mAnswer2Button.setVisibility(View.GONE);
+                                break;
+                            case 1 :
+                                mAnswer3Button.setVisibility(View.GONE);
+                                break;
+                            case 2 :
+                            case 3 :
+                                mAnswer1Button.setVisibility(View.GONE);
+                                break;
+                        }
                         break;
-                    case(2) :
-                    case(3) :
-                        mAnswer1Button.setVisibility(View.GONE);
-                        mAnswer2Button.setVisibility(View.GONE);
+                    case "Hard":
+                        mHintIcon.setVisibility(View.GONE);
                         break;
                 }
+
             }
         });
     }
