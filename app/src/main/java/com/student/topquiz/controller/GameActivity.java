@@ -178,11 +178,14 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mTimer = findViewById(R.id.timer);
         mTimer.setText(String.valueOf(counter));
         new CountDownTimer(counter * 1_000, 1_000){
-            public void onTick(long millisUntilFinished){
+            public void onTick(long millisUntilFinished)
+            {
+                if(mCurrentQuestion != question){cancel();}
                 mTimer.setText(String.valueOf(counter));
                 counter--;
             }
-            public  void onFinish(){
+            public  void onFinish()
+            {
                 if(mCurrentQuestion == question){endGame(GameState.lose);}
             }
         }.start();
