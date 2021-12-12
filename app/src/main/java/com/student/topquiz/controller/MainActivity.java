@@ -63,10 +63,12 @@ public class MainActivity extends AppCompatActivity {
         mEasyButton = findViewById(R.id.main_button_easy);
         mNormalButton = findViewById(R.id.main_button_normal);
         mHardButton = findViewById(R.id.main_button_hard);
-
         mEditButton = findViewById(R.id.edit_button);
+
         mInfoIcon = findViewById(R.id.infoicon);
         mSettingsIcon = findViewById(R.id.settingsicon);
+
+        initButton();
         String previousFirstName = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
         int previousScore = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, 0);
         String difficulty = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal");
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 buttonClick= MediaPlayer.create(MainActivity.this,R.raw.buttonclick);
                 buttonClick.start();
+                mPlayButton.setBackgroundColor(Color.YELLOW);
                 mUser.setFirstName(mNameEditText.getText().toString());
                 getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
                         .edit()
@@ -170,9 +173,9 @@ public class MainActivity extends AppCompatActivity {
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 buttonClick= MediaPlayer.create(MainActivity.this,R.raw.buttonclick);
                 buttonClick.start();
+                mEditButton.setBackgroundColor(Color.YELLOW);
                 Intent gameActivityIntent = new Intent(MainActivity.this, EditActivity.class);
                 startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE );
             }
@@ -204,6 +207,11 @@ public class MainActivity extends AppCompatActivity {
             ring.setLooping(true);
             ring.start();
         }
+        mPlayButton.animate().alpha(1f).translationYBy(-50).setDuration(1500);
+        mEditButton.animate().setStartDelay(400).alpha(1f).translationYBy(-50).setDuration(1500);
+        mEasyButton.animate().alpha(1f).translationYBy(50).setDuration(1500);
+        mNormalButton.animate().setStartDelay(200).alpha(1f).translationYBy(50).setDuration(1500);
+        mHardButton.animate().setStartDelay(400).alpha(1f).translationYBy(50).setDuration(1500);
     }
 
     @Override
@@ -221,7 +229,22 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         ring.stop();
     }
+    public void initButton(){
+        mPlayButton.setAlpha(0f);
+        mPlayButton.setTranslationY(50);
 
+        mEasyButton.setAlpha(0f);
+        mEasyButton.setTranslationY(-50);
+
+        mNormalButton.setAlpha(0f);
+        mNormalButton.setTranslationY(-50);
+
+        mHardButton.setAlpha(0f);
+        mHardButton.setTranslationY(-50);
+
+        mEditButton.setAlpha(0f);
+        mEditButton.setTranslationY(50);
+    }
     public void setDifficulty(String difficulty)
     {
         switch (difficulty) {

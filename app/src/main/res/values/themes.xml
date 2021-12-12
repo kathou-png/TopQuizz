@@ -17,6 +17,7 @@
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <!-- Customize your theme here. -->
     </style>
+
     <style name="Theme.darkTheme" parent="Theme.AppCompat.DayNight">
         <item name="colorPrimary">#110523</item>
         <item name="colorPrimaryVariant">#D7D6D8</item>
