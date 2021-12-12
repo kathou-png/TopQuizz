@@ -73,38 +73,88 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="20sp"
-            android:textStyle="bold"
             android:gravity="right"
-            android:text="TIMER : " />
+            android:text="TIMER : "
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:gravity="left"
             android:text="[time]"
-            android:gravity="left" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="right"
-            android:text="SCORE : " />
-        <TextView
-            android:id="@+id/score"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="[time]"
-            android:gravity="left" />
+            android:textStyle="bold" />
 
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:padding="1dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:gravity="right"
+                    android:text="SCORE : " />
+
+                <TextView
+                    android:id="@+id/score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="[score]"
+                    android:gravity="left" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:padding="1dp">
+
+                <ImageView
+                    android:id="@+id/heart1"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="left"
+                    android:src="@drawable/heart">
+                </ImageView>
+                <ImageView
+                    android:id="@+id/heart2"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="left"
+                    android:src="@drawable/heart">
+                </ImageView>
+                <ImageView
+                    android:id="@+id/heart3"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="left"
+                    android:src="@drawable/heart">
+                </ImageView>
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
