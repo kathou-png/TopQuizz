@@ -1,10 +1,14 @@
 package com.student.topquiz.controller;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -46,19 +51,30 @@ import java.util.Map;
 public class EditActivity extends AppCompatActivity  implements View.OnClickListener{
 
     private static final String TAG = "EditActivity";
+    private static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
+    private static final String SHARED_PREF_USER_THEME = "SHARED_PREF_THEME";
+
+    private int defaultTheme;
     private EditText mQuestionEditText;
     private EditText mAnswer1EditText;
     private EditText mAnswer2EditText;
     private EditText mAnswer3EditText;
     private EditText mAnswer4EditText;
+    private ImageView mInfoIcon;
+    private ImageView mSettingsIcon;
+    private ImageView mBackIcon;
     private int index;
     private Button mSubmitButton;
     private Boolean canSubmit = false;
+    MediaPlayer buttonClick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 0);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-
+        buttonClick= MediaPlayer.create(EditActivity.this,R.raw.buttonclick);
+        buttonClick.setLooping(false);
         Context context = this;
         mQuestionEditText = findViewById(R.id.questionEdit);
         mAnswer1EditText = findViewById(R.id.answer1Edit);
@@ -66,10 +82,27 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
         mAnswer3EditText  = findViewById(R.id.answer3Edit);
         mAnswer4EditText = findViewById(R.id.answer4Edit);
         mSubmitButton = findViewById(R.id.submit);
+        mInfoIcon = findViewById(R.id.infoicon);
+        mSettingsIcon = findViewById(R.id.settingsicon);
+        mBackIcon = findViewById(R.id.backicon);
         mSubmitButton.setEnabled(false);
-
+        mInfoIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonClick.start();
+                showInfoView();
+            }
+        });
+        mSettingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buttonClick.start();
+                showSettingsView();
+            }
+        });
         mSubmitButton.setOnClickListener(new View.OnClickListener(){
 
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 Log.d(TAG, String.valueOf(mQuestionEditText.getText()));
@@ -87,6 +120,12 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
                     e.printStackTrace();
                 }
 
+            }
+        });
+        mBackIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
@@ -239,6 +278,52 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
     }
     @Override
     public void onClick(View v){
+    }
+    private void showInfoView(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Information about this application")
+                .setMessage("This app was created by Alex VO, Sami OURABAH and Cathy TRUONG")
+                .setNeutralButton("GOT IT!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // builder.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void showSettingsView(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String[] items = {"Light Mode","Dark Mode"};
+        builder.setCancelable(false);
+        builder.setTitle("Choose Theme")
+                .setSingleChoiceItems(items, defaultTheme , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                                defaultTheme = 0;
+                                getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                                        .edit()
+                                        .putInt(SHARED_PREF_USER_THEME, 0)
+                                        .apply();
+                                break;
+                            case 1:
+                                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                                defaultTheme = 1;
+                                getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE)
+                                        .edit()
+                                        .putInt(SHARED_PREF_USER_THEME, 1)
+                                        .apply();
+                                break;
+                        }
+                    }
+                })
+                .create()
+                .show();
     }
 
 

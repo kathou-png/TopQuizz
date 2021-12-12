@@ -58,11 +58,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private static final String SHARED_PREF_USER_THEME = "SHARED_PREF_THEME";
     public static final String BUNDLE_STATE_SCORE = "BUNDLE_STATE_SCORE";
     public static final String BUNDLE_STATE_QUESTION = "BUNDLE_STATE_QUESTION";
+    public static int MAIN_ACTIVITY_REQUEST_CODE = 02;
     private TextView mQuestionTextView;
     private TextView mTimer;
     private TextView mScoreTextView;
     private ImageView mInfoIcon;
     private ImageView mSettingsIcon;
+    private ImageView mPlayIcon;
     private int counter;
     private Button mAnswer1Button;
     private Button mAnswer2Button;
@@ -97,11 +99,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         }
         setContentView(R.layout.activity_game);
         mEnableTouchEvents = true;
-        try {
-            mQuestionBank = generateQuestionBank();
-        } catch (FileNotFoundException | JSONException e) {
-            e.printStackTrace();
-        }
+
         mGameState = GameState.play;
         mLives = 3;
         mHeart1 = findViewById(R.id.heart1);
@@ -113,14 +111,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
         mInfoIcon = findViewById(R.id.infoicon);
         mSettingsIcon = findViewById(R.id.settingsicon);
+        mPlayIcon = findViewById(R.id.playicon);
         mAnswer1Button = findViewById(R.id.game_activity_button_1);
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
         mAnswer3Button = findViewById(R.id.game_activity_button_3);
         mAnswer4Button = findViewById(R.id.game_activity_button_4);
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
         mCurrentQuestion = mQuestionBank.getNextQuestion();
         defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 0);
-
-        displayQuestion(mCurrentQuestion);
 
         // Use the same listener for the four buttons.
     // The view id value will be used to distinguish the button triggered
@@ -143,25 +145,47 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 showSettingsView();
             }
         });
+        mPlayIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPlayIcon.setImageResource(R.drawable.ic_baseline_pause_24);
+                //onPause();
+                showPauseView();
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        mRemainingQuestionCount = 3;
         if (!ring.isPlaying()) {
             ring.setLooping(true);
             ring.start();
         }
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
+        displayQuestion(mCurrentQuestion);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        mRemainingQuestionCount = 3;
         if (!ring.isPlaying()) {
-            ring = MediaPlayer.create(GameActivity.this, R.raw.fluffing);
             ring.setLooping(true);
             ring.start();
         }
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
+        displayQuestion(mCurrentQuestion);
     }
 
     @Override
@@ -282,12 +306,13 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer4Button.setText(question.getChoiceByIndex(3));
         setTimer(question);
     }
+
     private void showInfoView(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         builder.setTitle("Information about this application")
                 .setMessage("This app was created by Alex VO, Sami OURABAH and Cathy TRUONG")
-                .setNegativeButton("GOT IT!", new DialogInterface.OnClickListener() {
+                .setNeutralButton("GOT IT!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // builder.dismiss();
@@ -296,6 +321,30 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .create()
                 .show();
     }
+    private void showPauseView(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("What do you want to do ?")
+                .setMessage("Going back will make you loose your points")
+                .setPositiveButton("Resume", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNeutralButton("Home", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent mainActivityIntent = new Intent(GameActivity.this, MainActivity.class);
+                        startActivityForResult(mainActivityIntent, MAIN_ACTIVITY_REQUEST_CODE );
+                        finish();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+
     private void showSettingsView(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] items = {"Light Mode","Dark Mode"};
@@ -327,6 +376,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .create()
                 .show();
     }
+
     protected QuestionBank generateQuestionBank() throws FileNotFoundException, JSONException {
         List<Question> questionList = new ArrayList<>();
         //READ QUESTIONS
@@ -499,6 +549,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
     private void endGame(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private  int mLastScore = 0;
     private String mDifficulty = "Normal";
     private static final int GAME_ACTIVITY_REQUEST_CODE = 03;
+    private static final int EDIT_ACTIVITY_REQUEST_CODE = 04;
     private static final String SHARED_PREF_USER_INFO = "SHARED_PREF_USER_INFO";
     private static final String SHARED_PREF_USER_INFO_NAME = "SHARED_PREF_USER_INFO_NAME";
     private static final String SHARED_PREF_USER_INFO_SCORE = "SHARED_PREF_USER_INFO_SCORE";
@@ -121,6 +123,14 @@ public class MainActivity extends AppCompatActivity {
                         .apply();
                 Intent gameActivityIntent = new Intent(MainActivity.this, GameActivity.class);
                 startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE );
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+                        mPlayButton.setBackgroundColor(Color.parseColor("#FF3700B3"));
+                    }
+                }, 500);
             }
         });
 
@@ -176,8 +186,16 @@ public class MainActivity extends AppCompatActivity {
                 buttonClick= MediaPlayer.create(MainActivity.this,R.raw.buttonclick);
                 buttonClick.start();
                 mEditButton.setBackgroundColor(Color.YELLOW);
-                Intent gameActivityIntent = new Intent(MainActivity.this, EditActivity.class);
-                startActivityForResult(gameActivityIntent, GAME_ACTIVITY_REQUEST_CODE );
+                Intent EditActivityIntent = new Intent(MainActivity.this, EditActivity.class);
+                startActivityForResult(EditActivityIntent, EDIT_ACTIVITY_REQUEST_CODE );
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do something after 5s = 5000ms
+                        mEditButton.setBackgroundColor(Color.parseColor("#FF3700B3"));
+                    }
+                }, 500);
             }
         });
         mInfoIcon.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +221,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        initButton();
         if (!ring.isPlaying()) {
             ring.setLooping(true);
             ring.start();
@@ -217,11 +237,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        initButton();
         if (!ring.isPlaying()) {
             ring = MediaPlayer.create(MainActivity.this, R.raw.fluffing);
             ring.setLooping(true);
             ring.start();
         }
+        mPlayButton.animate().alpha(1f).translationYBy(-50).setDuration(1500);
+        mEditButton.animate().setStartDelay(400).alpha(1f).translationYBy(-50).setDuration(1500);
+        mEasyButton.animate().alpha(1f).translationYBy(50).setDuration(1500);
+        mNormalButton.animate().setStartDelay(200).alpha(1f).translationYBy(50).setDuration(1500);
+        mHardButton.animate().setStartDelay(400).alpha(1f).translationYBy(50).setDuration(1500);
     }
 
     @Override
@@ -291,6 +318,9 @@ public class MainActivity extends AppCompatActivity {
             mGreetingTextView.setText( getString(R.string.welcomeback_text) + " "+mUser.getFirstName()+" !\n"
                     + getString(R.string.welcomeback_text2) +" "+ mUser.getScore() +" "+ getString(R.string.welcomeback_text3));
             mPlayButton.setEnabled(true);
+        }
+        else if (EDIT_ACTIVITY_REQUEST_CODE == requestCode){
+
         }
     }
 
