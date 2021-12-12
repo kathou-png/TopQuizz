@@ -17,7 +17,7 @@
 - [x] Partage du score sur les réseaux sociaux => Cathy
 - [x] Rajout de questions par l'utilisateur => Cathy
 - [x] 3 vies => Alex \
-  -> 3 vies représentés par 3 coeur rouges \
+  -> 3 vies représentées par 3 coeur rouges \
   -> À la perte d'une vie, appel d'une fonction qui va changer la couleur d'un coeur (Rouge > Gris) \
   -> Si la perte d'une vie est causée par un timer à 0, relance le timer après avoir enlevé une vie.
 
