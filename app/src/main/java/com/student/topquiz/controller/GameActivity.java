@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -20,6 +21,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.student.topquiz.R;
 import com.student.topquiz.model.Question;
 import com.student.topquiz.model.QuestionBank;
@@ -80,6 +87,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView mHeart1;
     private ImageView mHeart2;
     private ImageView mHeart3;
+    private static CallbackManager callbackManager;
+    private static ShareDialog shareDialog;
 
     MediaPlayer ring;
     MediaPlayer buttonClick;
@@ -603,17 +612,19 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                             finish();
                         }
                     })
+
                     .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent sendIntent = new Intent();
+                            openShareDialog();
+                           /* Intent sendIntent = new Intent();
                             sendIntent.setAction(Intent.ACTION_SEND);
                             sendIntent.putExtra(Intent.EXTRA_TEXT, "My best score is "+ mScore+" on TopQuizz ! Try to beat me");
                             sendIntent.setType("text/plain");
 
                             Intent shareIntent = Intent.createChooser(sendIntent, null);
                             startActivity(shareIntent);
-
+                            */
                             Intent intent = new Intent();
                             intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
                             setResult(RESULT_OK, intent);
@@ -624,7 +635,34 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     .show();
         }
     }
+public void openShareDialog(){
+    callbackManager = CallbackManager.Factory.create();
+    shareDialog = new ShareDialog(this);
+    shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+        @Override
+        public void onSuccess(Sharer.Result result) {
 
+        }
+
+        @Override
+        public void onError(@NonNull FacebookException e) {
+
+        }
+
+        @Override
+        public void onCancel() {
+
+        }
+    });
+    if (ShareDialog.canShow(ShareLinkContent.class)) {
+        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                .setQuote("My best score on top quizz is " + mScore + ", try to beat me")
+                .setContentUrl(Uri.parse("https://openclassrooms.com/fr/courses/4517166-developpez-votre-premiere-application-android"))
+                .build();
+        shareDialog.show(linkContent);
+    }
+
+}
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return mEnableTouchEvents && super.dispatchTouchEvent(ev);

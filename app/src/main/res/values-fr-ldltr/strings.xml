@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="facebook_app_id">380836923839765</string>
+    <string name="facebook_client_token">15eba0840864c8039d04efdc50c26b28</string>
     <string name="app_name">Meilleur Quizz</string>
     <string name="welcome_text">Bienvenue sur topQuizz. Quel est ton prénom ?</string>
     <string name="welcomeback_text">Re-bonjour, </string>
