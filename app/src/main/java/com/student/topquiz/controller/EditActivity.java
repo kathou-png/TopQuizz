@@ -86,6 +86,12 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
         mSettingsIcon = findViewById(R.id.settingsicon);
         mBackIcon = findViewById(R.id.backicon);
         mSubmitButton.setEnabled(false);
+
+        setListeners();
+
+    }
+
+    private void setListeners(){
         mInfoIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +136,7 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
         });
 
     }
+
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
@@ -265,6 +272,7 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
         }
         endActivity();
     }
+
     public void endActivity(){
         Toast.makeText(this, "Question added!", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
@@ -276,6 +284,7 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
         setResult(RESULT_OK, intent);
         finish();
     }
+
     @Override
     public void onClick(View v){
     }
@@ -283,8 +292,8 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
     private void showInfoView(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-        builder.setTitle("Information about this application")
-                .setMessage("This app was created by Alex VO, Sami OURABAH and Cathy TRUONG")
+        builder.setTitle(getString(R.string.info))
+                .setMessage(getString(R.string.info2))
                 .setNeutralButton("GOT IT!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -299,7 +308,7 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] items = {"Light Mode","Dark Mode"};
         builder.setCancelable(false);
-        builder.setTitle("Choose Theme")
+        builder.setTitle(getString(R.string.settings))
                 .setSingleChoiceItems(items, defaultTheme , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -320,12 +329,12 @@ public class EditActivity extends AppCompatActivity  implements View.OnClickList
                                         .putInt(SHARED_PREF_USER_THEME, 1)
                                         .apply();
                                 break;
+
+
                         }
                     }
                 })
                 .create()
                 .show();
     }
-
-
 }

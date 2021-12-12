@@ -6,6 +6,10 @@
     <string name="welcomeback_text">Welcome back, </string>
     <string name="welcomeback_text2">Your last score was </string>
     <string name="welcomeback_text3">, will you do better this time ? </string>
+    <string name="difficulty">Choose the difficulty : </string>
+    <string name="settings">Choose your theme</string>
+    <string name="info">About</string>
+    <string name="info2">This application was developped by Alex VO, Sami OURABAH and Cathy TRUONG</string>
     <string name="edit_questions">Add questions</string>
     <string name="edit_title">Add your question</string>
     <string name="edit_title1">Put your answers</string>

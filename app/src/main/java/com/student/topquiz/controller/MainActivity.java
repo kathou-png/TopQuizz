@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mHardButton;
     private Button mEditButton;
     private User mUser;
-
     private ImageView mInfoIcon;
     private ImageView mSettingsIcon;
     private int score;
@@ -50,31 +49,20 @@ public class MainActivity extends AppCompatActivity {
     private static final String SHARED_PREF_USER_INFO_DIFFICULTY = "SHARED_PREF_USER_INFO_DIFFICULTY";
     private static final String SHARED_PREF_USER_THEME = "SHARED_PREF_THEME";
     private int defaultTheme = 0;
+    private int previousScore;
+    private String previousFirstName;
+    private String difficulty;
     MediaPlayer ring;
     MediaPlayer buttonClick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ring = MediaPlayer.create(MainActivity.this, R.raw.fluffing);
-        mGreetingTextView = findViewById(R.id.main_textview_greeting);
-        mNameEditText = findViewById(R.id.main_edittext_name);
-        mPlayButton = findViewById(R.id.main_button_play);
 
-        mEasyButton = findViewById(R.id.main_button_easy);
-        mNormalButton = findViewById(R.id.main_button_normal);
-        mHardButton = findViewById(R.id.main_button_hard);
-        mEditButton = findViewById(R.id.edit_button);
-
-        mInfoIcon = findViewById(R.id.infoicon);
-        mSettingsIcon = findViewById(R.id.settingsicon);
-
-        initButton();
-        String previousFirstName = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
-        int previousScore = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, 0);
-        String difficulty = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal");
-        defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 0) - 1;
+        linkButtons();
+        sharedPref();
 
         mUser = new User(previousFirstName, previousScore, difficulty);
         setDifficulty("Normal");
@@ -93,6 +81,88 @@ public class MainActivity extends AppCompatActivity {
             mNameEditText.setText(previousFirstName);
             mPlayButton.setEnabled(true);
         }
+        setListeners();
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        initButton();
+        if (!ring.isPlaying()) {
+            ring.setLooping(true);
+            ring.start();
+        }
+        animateButton();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        initButton();
+        if (!ring.isPlaying()) {
+            ring = MediaPlayer.create(MainActivity.this, R.raw.fluffing);
+            ring.setLooping(true);
+            ring.start();
+        }
+        animateButton();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ring.stop();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (GAME_ACTIVITY_REQUEST_CODE == requestCode) {
+            // Fetch the score from the Intent
+
+            Gson gson = new Gson();
+            // mFirstname = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
+            mFirstname = mUser.getFirstName();
+            mLastScore =  data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
+            mDifficulty = mUser.getDifficulty();
+            String json = "{\"playerName\" : \"" + mFirstname + "\",\"playerScore\" : \"" + mLastScore + "\", \"difficulty\" : \"" + mDifficulty + "\"}";
+            mUser = gson.fromJson(json, User.class);
+
+            mGreetingTextView.setText( getString(R.string.welcomeback_text) + " "+mUser.getFirstName()+" !\n"
+                    + getString(R.string.welcomeback_text2) +" "+ mUser.getScore() +" "+ getString(R.string.welcomeback_text3));
+            mPlayButton.setEnabled(true);
+        }
+        else if (EDIT_ACTIVITY_REQUEST_CODE == requestCode){
+
+        }
+    }
+
+    private void linkButtons(){
+        mGreetingTextView = findViewById(R.id.main_textview_greeting);
+        mNameEditText = findViewById(R.id.main_edittext_name);
+        mPlayButton = findViewById(R.id.main_button_play);
+
+        mEasyButton = findViewById(R.id.main_button_easy);
+        mNormalButton = findViewById(R.id.main_button_normal);
+        mHardButton = findViewById(R.id.main_button_hard);
+        mEditButton = findViewById(R.id.edit_button);
+
+        mInfoIcon = findViewById(R.id.infoicon);
+        mSettingsIcon = findViewById(R.id.settingsicon);
+
+        initButton();
+    }
+
+    private void sharedPref(){
+        previousFirstName = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
+        previousScore = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_INFO_SCORE, 0);
+        difficulty = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal");
+        defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 1) ;
+
+    }
+
+    private void setListeners(){
+
         mNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -218,44 +288,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-        initButton();
-        if (!ring.isPlaying()) {
-            ring.setLooping(true);
-            ring.start();
-        }
-        mPlayButton.animate().alpha(1f).translationYBy(-50).setDuration(1500);
-        mEditButton.animate().setStartDelay(400).alpha(1f).translationYBy(-50).setDuration(1500);
-        mEasyButton.animate().alpha(1f).translationYBy(50).setDuration(1500);
-        mNormalButton.animate().setStartDelay(200).alpha(1f).translationYBy(50).setDuration(1500);
-        mHardButton.animate().setStartDelay(400).alpha(1f).translationYBy(50).setDuration(1500);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        initButton();
-        if (!ring.isPlaying()) {
-            ring = MediaPlayer.create(MainActivity.this, R.raw.fluffing);
-            ring.setLooping(true);
-            ring.start();
-        }
-        mPlayButton.animate().alpha(1f).translationYBy(-50).setDuration(1500);
-        mEditButton.animate().setStartDelay(400).alpha(1f).translationYBy(-50).setDuration(1500);
-        mEasyButton.animate().alpha(1f).translationYBy(50).setDuration(1500);
-        mNormalButton.animate().setStartDelay(200).alpha(1f).translationYBy(50).setDuration(1500);
-        mHardButton.animate().setStartDelay(400).alpha(1f).translationYBy(50).setDuration(1500);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        ring.stop();
-    }
     public void initButton(){
         mPlayButton.setAlpha(0f);
         mPlayButton.setTranslationY(50);
@@ -272,6 +305,15 @@ public class MainActivity extends AppCompatActivity {
         mEditButton.setAlpha(0f);
         mEditButton.setTranslationY(50);
     }
+
+    private void animateButton(){
+        mPlayButton.animate().alpha(1f).translationYBy(-50).setDuration(1500);
+        mEditButton.animate().setStartDelay(400).alpha(1f).translationYBy(-50).setDuration(1500);
+        mEasyButton.animate().alpha(1f).translationYBy(50).setDuration(1500);
+        mNormalButton.animate().setStartDelay(200).alpha(1f).translationYBy(50).setDuration(1500);
+        mHardButton.animate().setStartDelay(400).alpha(1f).translationYBy(50).setDuration(1500);
+    }
+
     public void setDifficulty(String difficulty)
     {
         switch (difficulty) {
@@ -301,34 +343,12 @@ public class MainActivity extends AppCompatActivity {
                 .putString(SHARED_PREF_USER_INFO_DIFFICULTY, mUser.getDifficulty())
                 .apply();
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (GAME_ACTIVITY_REQUEST_CODE == requestCode) {
-            // Fetch the score from the Intent
-
-            Gson gson = new Gson();
-           // mFirstname = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
-            mFirstname = mUser.getFirstName();
-            mLastScore =  data.getIntExtra(GameActivity.BUNDLE_EXTRA_SCORE, 0);
-            mDifficulty = mUser.getDifficulty();
-            String json = "{\"playerName\" : \"" + mFirstname + "\",\"playerScore\" : \"" + mLastScore + "\", \"difficulty\" : \"" + mDifficulty + "\"}";
-            mUser = gson.fromJson(json, User.class);
-
-            mGreetingTextView.setText( getString(R.string.welcomeback_text) + " "+mUser.getFirstName()+" !\n"
-                    + getString(R.string.welcomeback_text2) +" "+ mUser.getScore() +" "+ getString(R.string.welcomeback_text3));
-            mPlayButton.setEnabled(true);
-        }
-        else if (EDIT_ACTIVITY_REQUEST_CODE == requestCode){
-
-        }
-    }
 
     private void showInfoView(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
-        builder.setTitle("Information about this application")
-                .setMessage("This app was created by Alex VO, Sami OURABAH and Cathy TRUONG")
+        builder.setTitle(getString(R.string.info))
+                .setMessage(getString(R.string.info2))
                 .setNeutralButton("GOT IT!", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -343,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] items = {"Light Mode","Dark Mode"};
         builder.setCancelable(false);
-        builder.setTitle("Choose Theme")
+        builder.setTitle(getString(R.string.settings))
                 .setSingleChoiceItems(items, defaultTheme , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -7,11 +7,15 @@
     <string name="welcomeback_text">Re-bonjour, </string>
     <string name="welcomeback_text2">Ton dernier score est </string>
     <string name="welcomeback_text3">, pourras-tu faire mieux ? </string>
+    <string name="difficulty">Choisis ta difficulté : </string>
+    <string name="settings">Choisis ton thème</string>
     <string name="edit_questions">Ajouter des questions</string>
     <string name="edit_title">Ajoute ta question</string>
     <string name="edit_title1">Entre tes 4 réponses</string>
     <string name="edit_title2">Sélectionne la bonne réponse</string>
     <string name="submit">Ajouter</string>
+    <string name="info">A propos</string>
+    <string name="info2">Cette application a été développée par Alex VO, Sami OURABAH et Cathy TRUONG</string>
 
     <string name="name_text">Entre ton prénom</string>
     <string name="play_text">Jouer</string>

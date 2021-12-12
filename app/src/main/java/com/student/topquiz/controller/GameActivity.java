@@ -95,11 +95,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     MediaPlayer buttonClick;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        ring = MediaPlayer.create(GameActivity.this, R.raw.fluffing);
-        buttonClick= MediaPlayer.create(GameActivity.this,R.raw.buttonclick);
-        buttonClick.setLooping(false);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game);
+        defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 0);
+
+        initMusic();
         if (savedInstanceState != null) {
             mScore = savedInstanceState.getInt(BUNDLE_STATE_SCORE);
             mRemainingQuestionCount = savedInstanceState.getInt(BUNDLE_STATE_QUESTION);
@@ -107,15 +107,72 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             mScore = 0;
             mRemainingQuestionCount = 3;
         }
-        setContentView(R.layout.activity_game);
-        mEnableTouchEvents = true;
+        linkComponents();
+        initGameState();
+        setListeners();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRemainingQuestionCount = 3;
+        if (!ring.isPlaying()) {
+            ring.setLooping(true);
+            ring.start();
+        }
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
+        displayQuestion(mCurrentQuestion);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        mRemainingQuestionCount = 3;
+        if (!ring.isPlaying()) {
+            ring.setLooping(true);
+            ring.start();
+        }
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
+        displayQuestion(mCurrentQuestion);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ring.pause();
+    }
+
+    private void initMusic(){
+        ring = MediaPlayer.create(GameActivity.this, R.raw.fluffing);
+        buttonClick= MediaPlayer.create(GameActivity.this,R.raw.buttonclick);
+        buttonClick.setLooping(false);
+    }
+
+    private void initGameState(){
+        mEnableTouchEvents = true;
         mGameState = GameState.play;
         mLives = 3;
+        setHearts();
+        try {
+            mQuestionBank = generateQuestionBank();
+        } catch (FileNotFoundException | JSONException e) {
+            e.printStackTrace();
+        }
+        mCurrentQuestion = mQuestionBank.getNextQuestion();
+    }
+    private void linkComponents(){
         mHeart1 = findViewById(R.id.heart1);
         mHeart2 = findViewById(R.id.heart2);
         mHeart3 = findViewById(R.id.heart3);
-        setHearts();
         mScoreTextView = findViewById(R.id.score);
         mScoreTextView.setText(String.valueOf(mScore));
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
@@ -127,16 +184,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mAnswer2Button = findViewById(R.id.game_activity_button_2);
         mAnswer3Button = findViewById(R.id.game_activity_button_3);
         mAnswer4Button = findViewById(R.id.game_activity_button_4);
-        try {
-            mQuestionBank = generateQuestionBank();
-        } catch (FileNotFoundException | JSONException e) {
-            e.printStackTrace();
-        }
-        mCurrentQuestion = mQuestionBank.getNextQuestion();
-        defaultTheme = this.getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getInt(SHARED_PREF_USER_THEME, 0);
-
-        // Use the same listener for the four buttons.
-    // The view id value will be used to distinguish the button triggered
+    }
+    private void setListeners(){
         mAnswer1Button.setOnClickListener(this);
         mAnswer2Button.setOnClickListener(this);
         mAnswer3Button.setOnClickListener(this);
@@ -214,46 +263,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mRemainingQuestionCount = 3;
-        if (!ring.isPlaying()) {
-            ring.setLooping(true);
-            ring.start();
-        }
-        try {
-            mQuestionBank = generateQuestionBank();
-        } catch (FileNotFoundException | JSONException e) {
-            e.printStackTrace();
-        }
-        displayQuestion(mCurrentQuestion);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        mRemainingQuestionCount = 3;
-        if (!ring.isPlaying()) {
-            ring.setLooping(true);
-            ring.start();
-        }
-        try {
-            mQuestionBank = generateQuestionBank();
-        } catch (FileNotFoundException | JSONException e) {
-            e.printStackTrace();
-        }
-        displayQuestion(mCurrentQuestion);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        ring.pause();
-    }
-
     private void setHearts()
     {
         switch(mLives)
@@ -374,20 +383,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         setTimer(question);
     }
 
-    private void showInfoView(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setTitle("Information about this application")
-                .setMessage("This app was created by Alex VO, Sami OURABAH and Cathy TRUONG")
-                .setNeutralButton("GOT IT!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // builder.dismiss();
-                    }
-                })
-                .create()
-                .show();
-    }
     private void showPauseView(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -402,21 +397,34 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 .setNeutralButton("Home", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent mainActivityIntent = new Intent(GameActivity.this, MainActivity.class);
-                        startActivityForResult(mainActivityIntent, MAIN_ACTIVITY_REQUEST_CODE );
-                        finish();
+                        mGameState = GameState.lose;
+                        endGame();
                     }
                 })
                 .create()
                 .show();
     }
 
+    private void showInfoView(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle(getString(R.string.info))
+                .setMessage(getString(R.string.info2))
+                .setNeutralButton("GOT IT!", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // builder.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
 
     private void showSettingsView(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] items = {"Light Mode","Dark Mode"};
         builder.setCancelable(false);
-        builder.setTitle("Choose Theme")
+        builder.setTitle(getString(R.string.settings))
                 .setSingleChoiceItems(items, defaultTheme , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -437,6 +445,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                                         .putInt(SHARED_PREF_USER_THEME, 1)
                                         .apply();
                                 break;
+
+
                         }
                     }
                 })
@@ -694,7 +704,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                     .show();
         }
     }
-public void openShareDialog(){
+
+    public void openShareDialog(){
     callbackManager = CallbackManager.Factory.create();
     shareDialog = new ShareDialog(this);
     shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
@@ -722,14 +733,15 @@ public void openShareDialog(){
     }
 
 }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return mEnableTouchEvents && super.dispatchTouchEvent(ev);
     }
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
         outState.putInt(BUNDLE_STATE_SCORE, mScore);
         outState.putInt(BUNDLE_STATE_QUESTION, mRemainingQuestionCount);
     }
