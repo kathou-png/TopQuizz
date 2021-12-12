@@ -14,7 +14,6 @@
   -> Appel de la fonction endGame() à la fin du décompte en précisant un état de perte de partie. \
   -> Ajout de choix de difficulté (attribut de user). \
   -> La difficulté impacte maintenant les points (+/- en fonction de la difficulté et points negatifs en mode hard) \
-  -> Problème d elatence qui fait bugger le timer à regler.
 - [x] Partage du score sur les réseaux sociaux => Cathy
 - [x] Rajout de questions par l'utilisateur => Cathy
 - [ ] 3 vies 
