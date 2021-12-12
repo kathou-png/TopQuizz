@@ -39,7 +39,7 @@ import java.util.List;
 
 enum GameState
 {
-    win, lose, pause
+    win, lose, pause, play
 }
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
@@ -72,6 +72,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private Question mCurrentQuestion;
     private boolean mEnableTouchEvents;
     private int defaultTheme;
+    private GameState mGameState;
 
     MediaPlayer ring;
     MediaPlayer buttonClick;
@@ -96,6 +97,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         } catch (FileNotFoundException | JSONException e) {
             e.printStackTrace();
         }
+        mGameState = GameState.play;
         mScoreTextView = findViewById(R.id.score);
         mScoreTextView.setText(String.valueOf(mScore));
         mQuestionTextView = findViewById(R.id.game_activity_textview_question);
@@ -161,8 +163,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     private void setTimer(Question question)
     {
         // Add a delay to the timer to counter the bug which allowed the timer to go on for
-        // 3 seconds after the user answered correctly.
-        int delay = 3;
+        // 2 seconds after the user answered correctly.
+        int delay = 2;
         String difficulty = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_DIFFICULTY, "Normal").toString();
         switch (difficulty) {
             case "Easy":
@@ -182,14 +184,18 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             public void onTick(long millisUntilFinished)
             {
                 // If user has moved on to the next question, cancel the timer.
-                if(mCurrentQuestion != question){cancel();}
+                if(mCurrentQuestion != question || mGameState == GameState.lose){cancel();}
                 // Only display positive values.
                 if(counter >= 0){mTimer.setText(String.valueOf(counter));}
                 counter--;
             }
             public  void onFinish()
             {
-                if(mCurrentQuestion == question){endGame(GameState.lose);}
+                if(mCurrentQuestion == question)
+                {
+                    mGameState = GameState.lose;
+                    endGame();
+                }
             }
         }.start();
     }
@@ -421,7 +427,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                         displayQuestion(mCurrentQuestion);
                     }
                     else{
-                        endGame(GameState.win);
+                        mGameState = GameState.win;
+                        endGame();
                     }
                 }
             }, 2_000); // LENGTH_SHORT is usually 2 second long
@@ -441,12 +448,12 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
-    private void endGame(GameState gameState){
+    private void endGame(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
         String previousFirstName = getSharedPreferences(SHARED_PREF_USER_INFO, MODE_PRIVATE).getString(SHARED_PREF_USER_INFO_NAME, null);
 
-        if(gameState == GameState.win)
+        if(mGameState == GameState.win)
         {
             builder.setTitle("Well done, " + previousFirstName+ "!")
                     .setMessage(getString(R.string.score) + " "+mScore)
@@ -460,10 +467,27 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                             finish();
                         }
                     })
+                    .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, "My best score is "+ mScore+" on TopQuizz ! Try to beat me");
+                            sendIntent.setType("text/plain");
+
+                            Intent shareIntent = Intent.createChooser(sendIntent, null);
+                            startActivity(shareIntent);
+
+                            Intent intent = new Intent();
+                            intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    })
                     .create()
                     .show();
         }
-        else if(gameState == GameState.lose)
+        else if(mGameState == GameState.lose)
         {
             builder.setTitle("Game Over ! Better luck next time, " + previousFirstName+ "!")
                     .setMessage(getString(R.string.score) + " "+mScore)
@@ -477,42 +501,26 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                             finish();
                         }
                     })
+                    .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent sendIntent = new Intent();
+                            sendIntent.setAction(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, "My best score is "+ mScore+" on TopQuizz ! Try to beat me");
+                            sendIntent.setType("text/plain");
+
+                            Intent shareIntent = Intent.createChooser(sendIntent, null);
+                            startActivity(shareIntent);
+
+                            Intent intent = new Intent();
+                            intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
+                            setResult(RESULT_OK, intent);
+                            finish();
+                        }
+                    })
                     .create()
                     .show();
         }
-
-
-        builder.setTitle("Well done, " + previousFirstName+ "!")
-                .setMessage(getString(R.string.score) + " "+mScore)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent();
-                        Log.d(TAG,Integer.toString(mScore));
-                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-                .setNeutralButton("SHARE", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, "My best score is "+ mScore+" on TopQuizz ! Try to beat me");
-                        sendIntent.setType("text/plain");
-
-                        Intent shareIntent = Intent.createChooser(sendIntent, null);
-                        startActivity(shareIntent);
-
-                        Intent intent = new Intent();
-                        intent.putExtra(BUNDLE_EXTRA_SCORE, mScore);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                })
-                .create()
-                .show();
     }
 
     @Override
