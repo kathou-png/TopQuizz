@@ -2,12 +2,11 @@
 
 ## UI
 - [x] Musique en boucle
-- [ ] Animation question (lors de click...)
-- [ ] Voix narratrice
+- [x] Animation question (lors de click...)
 - [x] Mode nuit/jour, thème application => Cathy
 
 ## Fonctionnalités
-- [ ] Rajout de joker (3 indices) => Sami
+- [x] Rajout de joker (3 indices) => Sami
 - [x] Plusieurs modes de jeux (facile, normal, difficile) avec timer => ALEX \
   -> Timer qui décompte à partir d'un entier prédéfini. \
   -> Modification de la fonction endGame() pour prendre en compte le GameState (enum : win, lose, pause). \
@@ -22,5 +21,5 @@
   -> Si la perte d'une vie est causée par un timer à 0, relance le timer après avoir enlevé une vie.
 
 ## Autres
-- [ ] Alimentation de la base de données de questions
+- [x] Alimentation de la base de données de questions
 - [x] Rajout de langues (EN)
